@@ -352,12 +352,32 @@ export default class FrameView extends View<Frame, HTMLIFrameElement> {
 
       .${ppfx}dashed *[data-gjs-highlightable] {
         outline: 1px dashed rgba(170,170,170,0.7);
-        outline-offset: -2px;
+        outline-offset: -10px;
+      }
+
+      *[data-row-highlightable] {
+        outline: 1px dashed rgba(170,170,170,0.7);
+        outline-offset: -10px;
+      }
+
+      *[data-col-highlightable] {
+        outline: 1px dashed rgba(170,170,170,0.7);
+        outline-offset: -10px;
       }
 
       .${ppfx}selected {
-        outline: 2px solid #3b97e3 !important;
-        outline-offset: -2px;
+        border: 2px solid #3b97e3 !important;
+        // outline-offset: -2px !important;
+      }
+
+      .${ppfx}invisible {
+        background-color: transparent;
+        background-image: url("data:image/svg+xml,%3Csvg width='90' height='72' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M45 56.25c-10.667 0-19.301-8.256-20.096-18.719l-14.751-11.4c-1.94 2.433-3.724 5.005-5.164 7.817a4.55 4.55 0 0 0 0 4.105C12.615 52.933 27.713 63 45 63c3.785 0 7.435-.563 10.954-1.471l-7.297-5.646A20.27 20.27 0 0 1 45 56.25Zm44.13 8.17L73.584 52.405A46.581 46.581 0 0 0 85.01 38.052a4.549 4.549 0 0 0 0-4.105C77.384 19.067 62.286 9 45 9a43.334 43.334 0 0 0-20.717 5.302L6.393.474A2.25 2.25 0 0 0 3.233.87L.474 4.423A2.25 2.25 0 0 0 .869 7.58l82.738 63.946a2.25 2.25 0 0 0 3.158-.395l2.762-3.554a2.25 2.25 0 0 0-.397-3.157ZM63.295 44.452l-5.527-4.273A13.323 13.323 0 0 0 41.44 23.033 6.701 6.701 0 0 1 42.75 27a6.558 6.558 0 0 1-.217 1.406l-10.351-8A20.013 20.013 0 0 1 45 15.75 20.239 20.239 0 0 1 65.25 36c0 3.042-.744 5.877-1.955 8.453v-.002Z' fill='%23B3B6CB'/%3E%3C/svg%3E"),repeating-linear-gradient(135deg,rgba(0,0,0,.24) 0,rgba(0,0,0,.24) 1px,transparent 0,transparent 50%);
+        background-repeat: no-repeat,repeat;
+        background-size: 90px 72px,10px 10px;
+        background-position: 50% 50%;
+        z-index: 2;
+        cursor: not-allowed;
       }
 
       .${ppfx}selected-parent {

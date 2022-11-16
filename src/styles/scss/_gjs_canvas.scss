@@ -406,7 +406,7 @@ $guide_pad: 5px !default;
 
 .#{$app-prefix}resizer-h-bc {
   bottom: 0;
-  margin: $hndlMargin auto;
+  margin: $hndlMargin 48%;
   left: 0;
   right: 0;
   cursor: ns-resize;
@@ -432,7 +432,7 @@ $guide_pad: 5px !default;
 
   .#{$app-prefix}resizer-h-tc,
   .#{$app-prefix}resizer-h-bc {
-    margin: 0 auto;
+    margin: 0 48%;
     width: 100%;
   }
 

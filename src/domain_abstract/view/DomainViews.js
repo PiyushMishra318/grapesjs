@@ -98,7 +98,37 @@ export default class DomainViews extends Backbone.View {
         this.add(model, frag);
       }, this);
 
-    this.$el.append(frag);
+    if (this.$el[0] && this.$el[0].parentNode && Array.from(this.$el[0].parentNode.classList).includes('gjs-toolbar')) {
+      const toolEl = document.createElement('div');
+      this.$el[0].style = 'display:flex';
+      this.$el.append(toolEl);
+
+      this.$el[0].children[0].style = 'display:none';
+
+      this.$el[0].children[0].append(frag);
+
+      const toggleBtn = document.createElement('div');
+      toggleBtn.innerHTML =
+        '<div class="gjs-toolbar-item gjs-expand-tlb"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M0 416c0-17.7 14.3-32 32-32l54.7 0c12.3-28.3 40.5-48 73.3-48s61 19.7 73.3 48L480 384c17.7 0 32 14.3 32 32s-14.3 32-32 32l-246.7 0c-12.3 28.3-40.5 48-73.3 48s-61-19.7-73.3-48L32 448c-17.7 0-32-14.3-32-32zm192 0c0-17.7-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32zM384 256c0-17.7-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32zm-32-80c32.8 0 61 19.7 73.3 48l54.7 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-54.7 0c-12.3 28.3-40.5 48-73.3 48s-61-19.7-73.3-48L32 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l246.7 0c12.3-28.3 40.5-48 73.3-48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32s-14.3-32-32-32zm73.3 0L480 64c17.7 0 32 14.3 32 32s-14.3 32-32 32l-214.7 0c-12.3 28.3-40.5 48-73.3 48s-61-19.7-73.3-48L32 128C14.3 128 0 113.7 0 96S14.3 64 32 64l86.7 0C131 35.7 159.2 16 192 16s61 19.7 73.3 48z"/></svg></div>';
+      this.$el.append(toggleBtn);
+
+      let width;
+      toggleBtn.querySelector('.gjs-expand-tlb').onclick = () => {
+        toggleBtn.querySelector('.gjs-expand-tlb').classList.toggle('gjs-tlb-open');
+
+        if (Array.from(toggleBtn.querySelector('.gjs-expand-tlb').classList).includes('gjs-tlb-open')) {
+          this.$el[0].children[0].style.display = 'block';
+          width = this.$el[0].children[0].getBoundingClientRect().width;
+          this.$el.parent()[0].style.left =
+            parseFloat(this.$el.parent()[0].style.left.replace('px', '')) - width + 'px';
+        } else {
+          this.$el[0].children[0].style.display = 'none';
+          this.$el.parent()[0].style.left =
+            parseFloat(this.$el.parent()[0].style.left.replace('px', '')) + width + 'px';
+        }
+      };
+    } else this.$el.append(frag);
+
     this.onRender();
     return this;
   }

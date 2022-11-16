@@ -478,6 +478,7 @@ export default {
     const toolbarEl = this.canvas.getToolbarEl();
     const toolbarStyle = toolbarEl.style;
     const toolbar = model.get('toolbar');
+
     const showToolbar = em.get('Config').showToolbar;
 
     if (model && showToolbar && toolbar && toolbar.length) {

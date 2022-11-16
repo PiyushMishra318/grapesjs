@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>GrapesJS</title>
     <link rel="stylesheet" href="dist/css/grapes.min.css">
-    <script src="grapes.min.js"></script>
+    <script src="./grapes.min.js"></script>
     <style>
       body,
       html {
@@ -79,7 +79,7 @@
     </div>
 
     <script type="text/javascript">
-      var editor = grapesjs.init({
+      var editor = window["@piyushmishra/grapesjs"].init({
         showOffsets: 1,
         noticeOnUnload: 0,
         container: '#gjs',

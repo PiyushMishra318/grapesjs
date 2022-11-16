@@ -63,6 +63,10 @@ const commandsDef = [
   ['open-assets', 'OpenAssets', 'open-assets'],
   ['component-select', 'SelectComponent', 'select-comp'],
   ['component-outline', 'SwitchVisibility', 'sw-visibility'],
+  ['toggle-visibility', 'ToggleVisibility'],
+  ['switch-block', 'SwitchBlock'],
+  ['switch-styles', 'SwitchStyles'],
+  ['row-config', 'RowConfig'],
   ['component-offset', 'ShowOffset', 'show-offset'],
   ['component-move', 'MoveComponent', 'move-comp'],
   ['component-next', 'ComponentNext'],
@@ -127,10 +131,40 @@ export default () => {
         },
       };
 
+      defaultCommands['tlb-visibility'] = {
+        run(ed) {
+          return ed.runCommand('core:toggle-visibility');
+        },
+      };
+
       defaultCommands['tlb-clone'] = {
         run(ed) {
           ed.runCommand('core:copy');
           ed.runCommand('core:paste', { action: 'clone-component' });
+        },
+      };
+
+      defaultCommands['tlb-copy'] = {
+        run(ed) {
+          ed.runCommand('core:copy');
+        },
+      };
+
+      defaultCommands['tlb-paste'] = {
+        run(ed) {
+          ed.runCommand('core:paste');
+        },
+      };
+
+      defaultCommands['tlb-row-config'] = {
+        run(ed) {
+          ed.runCommand('core:row-config');
+        },
+      };
+
+      defaultCommands['tlb-switch-styles'] = {
+        run(ed) {
+          ed.runCommand('core:switch-styles');
         },
       };
 

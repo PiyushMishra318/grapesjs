@@ -1,4 +1,5 @@
 import { bindAll, defaults, isFunction, each } from 'underscore';
+import appendResizeController from './Custom/AppendResizeController';
 import { on, off, normalizeFloat } from './mixins';
 
 var defaultOpts = {
@@ -24,10 +25,10 @@ var defaultOpts = {
   maxDim: '',
 
   // Unit used for height resizing
-  unitHeight: 'px',
+  unitHeight: '%',
 
   // Unit used for width resizing
-  unitWidth: 'px',
+  unitWidth: '%',
 
   // The key used for height resizing
   keyHeight: 'height',
@@ -127,8 +128,13 @@ class Resizer {
 
     // Create container if not yet exist
     if (!container) {
+      // Create container if not yet exist
+      appendTo.style.position = 'relative';
+      appendTo.style.height = '100%';
+
       container = document.createElement('div');
       container.className = `${pfx}resizer-c`;
+
       appendTo.appendChild(container);
       this.container = container;
     }
@@ -136,6 +142,24 @@ class Resizer {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
+
+    // ** custom feature added ** //
+    if (opts['cr'])
+      appendResizeController(
+        this.opts,
+        container,
+        pfx,
+        this.getFocusedEl() && this.getFocusedEl().computedStyleMap().get('width').value,
+        this.getFocusedEl() &&
+          this.getFocusedEl().previousSibling &&
+          this.getFocusedEl().previousSibling.computedStyleMap &&
+          this.getFocusedEl().previousSibling.computedStyleMap().get('width').value,
+        this.getFocusedEl() &&
+          this.getFocusedEl().nextSibling &&
+          this.getFocusedEl().nextSibling.computedStyleMap &&
+          this.getFocusedEl().nextSibling.computedStyleMap().get('width').value,
+        this.getFocusedEl()
+      );
 
     // Create handlers
     const handlers = {};
@@ -355,13 +379,32 @@ class Resizer {
     const el = this.el;
     const resizer = this;
     const config = this.opts;
+    const pfx = this.opts.prefix || '';
     const rect = this.rectDim;
     const updateTarget = this.updateTarget;
     const selectedHandler = this.getSelectedHandler();
     const { unitHeight, unitWidth, keyWidth, keyHeight } = config;
 
-    // Use custom updating strategy if requested
+    if (
+      this.el.previousSibling &&
+      this.el.previousSibling.className &&
+      this.el.previousSibling.className.includes('gjs-cell')
+    ) {
+      const sc = this.container.querySelector(`.${pfx}resize-controller-input.input-b`);
+      sc.value = rect.w;
+      sc.dispatchEvent(new Event('change'));
+    } else if (
+      this.el.nextSibling &&
+      this.el.nextSibling.className &&
+      this.el.nextSibling.className.includes('gjs-cell')
+    ) {
+      const sc = this.container.querySelector(`.${pfx}resize-controller-input.input-a`);
+      sc.value = rect.w;
+      sc.dispatchEvent(new Event('change'));
+    }
+
     if (isFunction(updateTarget)) {
+      // Use custom updating strategy if requested
       updateTarget(el, rect, {
         store,
         selectedHandler,
@@ -370,8 +413,8 @@ class Resizer {
       });
     } else {
       const elStyle = el.style;
-      elStyle[keyWidth] = rect.w + unitWidth;
-      elStyle[keyHeight] = rect.h + unitHeight;
+      elStyle[keyWidth] = rect.w + '%';
+      elStyle[keyHeight] = rect.h + '%';
     }
 
     this.updateContainer();
@@ -439,7 +482,7 @@ class Resizer {
       this.start(e);
     } else if (el !== this.el) {
       this.selectedHandler = '';
-      this.blur();
+      // this.blur();
     }
   }
 
@@ -460,8 +503,14 @@ class Resizer {
     const parentH = this.parentDim.h;
     const unitWidth = this.opts.unitWidth;
     const unitHeight = this.opts.unitHeight;
-    const startW = unitWidth === '%' ? (startDim.w / 100) * parentW : startDim.w;
-    const startH = unitHeight === '%' ? (startDim.h / 100) * parentH : startDim.h;
+    const startW =
+      // unitWidth === "%" ?
+      (startDim.w / 100) * parentW;
+    //  : startDim.w;
+    const startH =
+      // unitHeight === "%" ?
+      (startDim.h / 100) * parentH;
+    //  : startDim.h;
     var box = {
       t: 0,
       l: 0,
@@ -474,36 +523,41 @@ class Resizer {
     var attr = data.handlerAttr;
     if (~attr.indexOf('r')) {
       value =
-        unitWidth === '%'
-          ? normalizeFloat(((startW + deltaX * step) / parentW) * 100, 0.01)
-          : normalizeFloat(startW + deltaX * step, step);
+        // unitWidth === "%"
+        // ?
+        normalizeFloat(((startW + deltaX * step) / parentW) * 100, 0.01);
+      // : normalizeFloat(startW + deltaX * step, step);
       value = Math.max(minDim, value);
       maxDim && (value = Math.min(maxDim, value));
       box.w = value;
     }
     if (~attr.indexOf('b')) {
       value =
-        unitHeight === '%'
-          ? normalizeFloat(((startH + deltaY * step) / parentH) * 100, 0.01)
-          : normalizeFloat(startH + deltaY * step, step);
+        // unitHeight === "%"
+        // ?
+        normalizeFloat(((startH + deltaY * step) / parentH) * 100, 0.01);
+      // : normalizeFloat(startH + deltaY * step, step);
       value = Math.max(minDim, value);
       maxDim && (value = Math.min(maxDim, value));
       box.h = value;
     }
     if (~attr.indexOf('l')) {
       value =
-        unitWidth === '%'
-          ? normalizeFloat(((startW - deltaX * step) / parentW) * 100, 0.01)
-          : normalizeFloat(startW - deltaX * step, step);
+        // unitWidth === "%"
+        // ?
+        normalizeFloat(((startW - deltaX * step) / parentW) * 100, 0.01);
+      // :
+      // normalizeFloat(startW - deltaX * step, step);
       value = Math.max(minDim, value);
       maxDim && (value = Math.min(maxDim, value));
       box.w = value;
     }
     if (~attr.indexOf('t')) {
       value =
-        unitHeight === '%'
-          ? normalizeFloat(((startH - deltaY * step) / parentH) * 100, 0.01)
-          : normalizeFloat(startH - deltaY * step, step);
+        // unitHeight === "%"
+        // ?
+        normalizeFloat(((startH - deltaY * step) / parentH) * 100, 0.01);
+      // : normalizeFloat(startH - deltaY * step, step);
       value = Math.max(minDim, value);
       maxDim && (value = Math.min(maxDim, value));
       box.h = value;

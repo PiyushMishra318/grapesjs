@@ -77,8 +77,8 @@ const propsToListen = ['open', 'status', 'locked', 'custom-name', 'components', 
   .map(p => `component:update:${p}`)
   .join(' ');
 
-const isStyleHidden = (style: any = {}) => {
-  return (style.display || '').trim().indexOf('none') === 0;
+const isStyleHidden = (classes: any = []) => {
+  return classes.includes('gjs-invisible');
 };
 
 export default class LayerManager extends Module<typeof defaults> {
@@ -184,14 +184,14 @@ export default class LayerManager extends Module<typeof defaults> {
     if (value) {
       const prevDisplay = component.get(prevDspKey);
       delete style.display;
-
+      component.removeClass('gjs-invisible');
       if (prevDisplay) {
         style.display = prevDisplay;
         component.unset(prevDspKey);
       }
     } else {
       display && component.set(prevDspKey, display);
-      style.display = 'none';
+      component.addClass('gjs-invisible');
     }
 
     component.setStyle(style, styleOpts);
@@ -205,7 +205,7 @@ export default class LayerManager extends Module<typeof defaults> {
    * @returns {Boolean}
    */
   isVisible(component: Component): boolean {
-    return !isStyleHidden(component.getStyle(styleOpts));
+    return !isStyleHidden(component.getClasses());
   }
 
   /**

@@ -9,6 +9,7 @@ export default {
       posFetcher: canvasView.getElementPos.bind(canvasView),
       mousePosFetcher: canvas.getMouseRelativePos,
       ...(opt.options || {}),
+      editor,
     };
     let { canvasResizer } = this;
 

@@ -145,6 +145,7 @@ export default class ItemView extends View {
       ['change:open', this.updateOpening],
       ['change:layerable', this.updateLayerable],
       ['change:style:display', this.updateVisibility],
+      ['change:class', this.updateVisibility],
       ['rerender:layer', this.render],
       ['change:name change:custom-name', this.updateName],
       // @ts-ignore
@@ -176,7 +177,8 @@ export default class ItemView extends View {
     const { pfx, model, module } = this;
     const hClass = `${pfx}layer-hidden`;
     const hidden = !module.isVisible(model);
-    const method = hidden ? 'addClass' : 'removeClass';
+    const method = !hidden ? 'addClass' : 'removeClass';
+    // console.log(!model.getClasses().includes("gjs-selected"))
     this.$el[method](hClass);
     this.getVisibilityEl()[method](`${pfx}layer-off`);
   }
@@ -426,7 +428,7 @@ export default class ItemView extends View {
     el.attr('class', this.className!);
     this.updateStatus();
     this.updateOpening();
-    this.updateVisibility();
+    // this.updateVisibility();
     this.__render();
     this._rendered = true;
     return this;
